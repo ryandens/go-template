@@ -2,3 +2,11 @@ language: go
 
 go:
   1.12.7
+
+before_install:
+  - curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $GOPATH/bin latest
+
+script:
+  - go build
+  - go test
+  - gosec ./...

@@ -20,3 +20,6 @@ public.crt
 
 # OPATH
 OPATH/
+
+# Executable created by this project
+server

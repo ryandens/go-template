@@ -17,5 +17,5 @@ func main() {
 	http.HandleFunc("/", HomeHandler)
 	log.Print("Listening on localhost")
 	// log the error
-	log.Fatal(http.ListenAndServeTLS(":443", "public.crt", "private.key", nil))
+	log.Fatal(http.ListenAndServeTLS(":8080", "public.crt", "private.key", nil))
 }

@@ -1,5 +1,5 @@
-# go-template [![Build Status](https://travis-ci.com/ryandens/go-template.svg?token=zrk2qgs8pLCF6veGNV1S&branch=master)](https://travis-ci.com/ryandens/go-template)
-Template repository which has a simple HTTP server using TLS.
+# hello-world-service [![Build Status](https://travis-ci.com/ryandens/hello-world-service.svg?token=zrk2qgs8pLCF6veGNV1S&branch=master)](https://travis-ci.com/ryandens/hello-world-service)
+Simple GoLang HTTP server which supports TLS.
 
 ## Development
 To build and test this project, simply run `make` in the root project directory. See the

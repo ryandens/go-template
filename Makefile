@@ -1,10 +1,14 @@
-PHONY: clean deps test build
+PHONY: clean devdeps deps test build
 
 clean:
 	rm -rf server
 	rm -rf OPATH/
 
 deps:
+	openssl genrsa -out private.key 2048
+	openssl req -new -x509 -sha256 -key private.key -out public.crt -subj "/C=US/ST=Ryan Dens/L=Baltimore/O=Ryan Dens Enterprises/OU=Dev"
+
+devdeps:
 	curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $GOPATH/bin latest
 
 test:

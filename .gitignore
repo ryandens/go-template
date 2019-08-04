@@ -17,3 +17,6 @@
 # SSL
 private.key
 public.crt
+
+# OPATH
+OPATH/

@@ -22,3 +22,9 @@ func VerifyBasicAuth(suppliedUsername string, suppliedPassword string, ok bool, 
 	}
 	return false
 }
+
+// hashes password using bcrypt
+func HashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	return string(hashedPassword), err
+}

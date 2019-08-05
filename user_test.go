@@ -42,14 +42,22 @@ func TestAddUserToFile(t *testing.T) {
 		t.Fatalf("Problem opening test artifact test_users.csv")
 	}
 
-	if AddUserToFile(file, User{
+	duplicateSuccess, duplicateErr := AddUserToFile(file, User{
 		"ryandens",
 		"FakeHash",
-	}) {
+	})
+	if duplicateErr != nil {
+		t.Fatal(duplicateErr)
+	}
+	if duplicateSuccess {
 		t.Fatal("Duplicate user name should not be successfully added")
 	}
 
-	if !AddUserToFile(file, User{"newuser", "FakeHash"}) {
+	newSuccess, newErr := AddUserToFile(file, User{"newuser", "FakeHash"})
+	if newErr != nil {
+		t.Fatal(newErr)
+	}
+	if !newSuccess {
 		t.Fatal("New user should have been  added to file")
 	}
 }

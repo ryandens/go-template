@@ -14,6 +14,31 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// wraps HTTP handlers in another HTTP handler which first does authorization checks and then executes the original handler
+func AuthWrapperHandler(handler func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		username, password, ok := r.BasicAuth()
+		if !ok {
+			log.Print("Basic Auth header returned false for ok")
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		}
+
+		users, userError := GetUsers()
+		if userError != nil {
+			log.Print("Problem getting users from users.csv")
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		}
+
+		if !VerifyBasicAuth(username, password, ok, users) {
+			log.Print("Invalid login attempt")
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		}
+
+		// execute the request if the user is authorized
+		handler(w, r)
+	}
+}
+
 func main() {
 	http.HandleFunc("/", HomeHandler)
 	log.Print("Listening on https://localhost:8080/")

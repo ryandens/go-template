@@ -34,5 +34,22 @@ func TestGetUsers(t *testing.T) {
 			t.Fatalf("user parsed from test_users.csv did not match. Expected: %v, Actual :%v", expectedUser, users[i])
 		}
 	}
+}
 
+func TestAddUserToFile(t *testing.T) {
+	file, fileErr := os.Open("test_users.csv")
+	if fileErr != nil {
+		t.Fatalf("Problem opening test artifact test_users.csv")
+	}
+
+	if AddUserToFile(file, User{
+		"ryandens",
+		"FakeHash",
+	}) {
+		t.Fatal("Duplicate user name should not be successfully added")
+	}
+
+	if !AddUserToFile(file, User{"newuser", "FakeHash"}) {
+		t.Fatal("New user should have been  added to file")
+	}
 }

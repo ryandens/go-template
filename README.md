@@ -36,3 +36,25 @@ This project uses [gosec](https://github.com/securego/gosec),
 which scans the Go AST of the project in the Travis CI pipeline. This scan occurs in the 
 `test` section of the [Makefile](Makefile) and runs with every `make` command in the 
 root directory of this project.
+
+
+## Project post-mortem
+I fell short on the requirements a bit. I used basic authentication, which is perfectly secure,
+but I did not create the forms necessary for it to be usable in a browser. To use the app,
+one must always provide the authorization header. Sample `curl` commands are in the [Makefile](Makefile)
+
+I definitely bit off more than I could chew a bit, and got hung up a bit on some implementation
+details. In retrospect, perhaps I should have not used TLS and left that out of scope of the
+project. Regardless, I did enjoy toying with it
+
+I did not have the time to read super thoroughly on Go best practices. The biggest security
+pitfall in this project is me, because I am not super familiar with Go's APIs. In addition, this
+project is not up to my style or testing standards. I was able to skim the "Effective Go" blog,
+which reminded me of my favorite book "Effective Java". I found it hard to keep the design principles
+I've learned in technical books in mind while trying to finish this small project in a reasonable
+amount of time and learning to do things "the go way". I also wasn't familiar with the go approach
+for integration testing, so I rely on using curl.
+
+All in all, I had loads of fun doing this project. This is something to iterate on as I become
+more familiar with Go, and I'm sure I'll have lots of opinions on how wrong I was to do
+X, Y, and Z in not too long.

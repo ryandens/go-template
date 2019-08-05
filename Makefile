@@ -26,3 +26,8 @@ curlcommands:
 	curl --user ryandens:123ABD --request POST --cacert public.crt https://localhost:8080/signup
 	curl --user ryandens:123ABD --request GET --cacert public.crt https://localhost:8080/hello
 	curl --user ryandens:123ABD --request POST --cacert public.crt --data 'ryancdens' https://localhost:8080/update-name
+
+badcurlcommands:
+	curl --user ryandensaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:123ABD --request POST --cacert public.crt https://localhost:8080/signup
+	curl --user ryandens:123ABDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa --request POST --cacert public.crt https://localhost:8080/signup
+	curl --user alert%281%29:123ABD --request POST --cacert public.crt https://localhost:8080/signup

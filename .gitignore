@@ -26,3 +26,4 @@ server
 
 # Artifacts created by the server running
 users.csv
+test_users.csv

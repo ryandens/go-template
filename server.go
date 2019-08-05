@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -32,6 +33,79 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ChangeNameHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		log.Print("Unsupported HTTP method")
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
+	}
+
+	username, _, _ := r.BasicAuth()
+	bodyBytes, e := ioutil.ReadAll(r.Body)
+	if e != nil {
+		log.Print(e)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+	}
+
+	newUserName := string(bodyBytes)
+
+	if !ValidateUserName(newUserName, w) {
+		return
+	} else {
+		UpdateUserWithName(username, newUserName)
+	}
+}
+
+// return true if valid, otherwise false
+func ValidatePassword(password string, w http.ResponseWriter) bool {
+	if len(password) > 32 {
+		message := "Username or password did not comply with length guidelines"
+		log.Print(message)
+		_, writeErr := w.Write([]byte(message))
+		if writeErr != nil {
+			log.Print(writeErr)
+		}
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return false
+	}
+	return true
+}
+
+// return true if valid, otherwise false
+func ValidateUserName(userName string, w http.ResponseWriter) bool {
+
+	// only allow names and passwords that are less than 32 characters in length to prevent the
+	// user from writing an arbitrary number of bytes to disk
+	// The number 32 is insignificant here, there just needs to be a sensible ceiling
+	if len(userName) > 32 {
+		message := "Username or password did not comply with length guidelines"
+		log.Print(message)
+		_, writeErr := w.Write([]byte(message))
+		if writeErr != nil {
+			log.Print(writeErr)
+		}
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return false
+	}
+
+	// we need to be extra careful about the user name because it gets written to the response
+	// to prevent XSS, make sure it at least one English letter, followed by any amount of english letters or spaces.
+	// As support is added for other dialects, this regex can be expanded
+	userNameRegex := regexp.MustCompile("[A-Za-z][A-Za-z ]*")
+	if !userNameRegex.MatchString(userName) {
+		message := "Username must contain only letters A-Z or a-z"
+		log.Print(message)
+		_, writeErr := w.Write([]byte(message))
+		if writeErr != nil {
+			log.Print(writeErr)
+		}
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return false
+	}
+
+	return true
+}
+
 // Accepts POST requests. If username and password are valid, it creates a user and stores in CSV file
 // TODO there is definitely some opportunity for code re-use here, but as I am the only reviewer, I wanted
 // to make it crystal clear where user data (potentially attacker data) is being used.
@@ -45,34 +119,11 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// only allow names and passwords that are less than 32 characters in length to prevent the
-		// user from writing an arbitrary number of bytes to disk
-		// The number 32 is insignificant here, there just needs to be a sensible ceiling
-		if len(username) > 32 || len(password) > 32 {
-			message := "Username or password did not comply with length guidelines"
-			log.Print(message)
-			_, writeErr := w.Write([]byte(message))
-			if writeErr != nil {
-				log.Print(writeErr)
-			}
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		// if either username or password aren't valid, return
+		if !ValidateUserName(username, w) || !ValidatePassword(password, w) {
 			return
 		}
 
-		// we need to be extra careful about the user name because it gets written to the response
-		// to prevent XSS, make sure it at least one English letter, followed by any amount of english letters or spaces.
-		// As support is added for other dialects, this regex can be expanded
-		userNameRegex := regexp.MustCompile("[A-Za-z][A-Za-z ]*")
-		if !userNameRegex.MatchString(username) {
-			message := "Username must contain only letters A-Z or a-z"
-			log.Print(message)
-			_, writeErr := w.Write([]byte(message))
-			if writeErr != nil {
-				log.Print(writeErr)
-			}
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			return
-		}
 		hashedPassword, hashErr := HashPassword(password)
 		if hashErr != nil {
 			message := "Problem creating user"
@@ -136,6 +187,7 @@ func main() {
 	http.HandleFunc("/", HomeHandler)
 	http.HandleFunc("/signup", SignUpHandler)
 	http.HandleFunc("/hello", AuthWrapperHandler(HelloHandler))
+	http.HandleFunc("/update-name", AuthWrapperHandler(ChangeNameHandler))
 	log.Print("Listening on https://localhost:8080/")
 	file, e := os.Create("users.csv")
 	if e != nil {

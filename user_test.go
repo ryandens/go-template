@@ -13,12 +13,12 @@ func TestGetUsers(t *testing.T) {
 		"abcd",
 	}, User{"josesolis", "defg"})
 
-	// WHEN we call GetUsers on the test_users.csv artifact
+	// WHEN we call GetUsersFromFile on the test_users.csv artifact
 	file, fileErr := os.Open("test_users.csv")
 	if fileErr != nil {
 		t.Fatalf("Problem opening test artifact test_users.csv")
 	}
-	users, e := GetUsers(file)
+	users, e := GetUsersFromFile(file)
 	if e != nil {
 		t.Fatal(e)
 	}

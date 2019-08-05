@@ -13,9 +13,18 @@ type User struct {
 	HashedPassword string
 }
 
+// calls GetUsrsFromFile with the default users.csv file
+func GetUsers() ([]User, error) {
+	file, e := os.Open("users.csv")
+	if e != nil {
+		log.Fatalf("Problem opening users.csv %v", e)
+	}
+	return GetUsersFromFile(file)
+}
+
 // read existing users into memory
 // adapted from example provided in https://golang.org/pkg/encoding/csv/
-func GetUsers(usersCsv *os.File) ([]User, error) {
+func GetUsersFromFile(usersCsv *os.File) ([]User, error) {
 	reader := csv.NewReader(bufio.NewReader(usersCsv))
 	var users []User
 

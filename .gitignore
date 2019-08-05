@@ -23,3 +23,6 @@ OPATH/
 
 # Executable created by this project
 server
+
+# Artifacts created by the server running
+users.csv

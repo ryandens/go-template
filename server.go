@@ -54,6 +54,10 @@ func ChangeNameHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		UpdateUserWithName(username, newUserName)
 	}
+	_, writeErr := fmt.Fprintf(w, "Hello, %v", template.HTMLEscapeString(newUserName))
+	if writeErr != nil {
+		log.Print(writeErr)
+	}
 }
 
 // return true if valid, otherwise false

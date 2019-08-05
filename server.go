@@ -135,6 +135,7 @@ func AuthWrapperHandler(handler func(http.ResponseWriter, *http.Request)) func(h
 func main() {
 	http.HandleFunc("/", HomeHandler)
 	http.HandleFunc("/signup", SignUpHandler)
+	http.HandleFunc("/hello", AuthWrapperHandler(HelloHandler))
 	log.Print("Listening on https://localhost:8080/")
 	file, e := os.Create("users.csv")
 	if e != nil {

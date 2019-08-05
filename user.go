@@ -53,6 +53,47 @@ func AddUser(newUser User) (bool, error) {
 	return AddUserToFile(file, newUser)
 }
 
+// Reads in all the users into memory. If userName is present, replace it with newName
+// and rewrite the file to be updated. This could absolutely be optimized, I'm just not familiar
+// enough with go's APIs
+func UpdateUserWithName(userName string, newName string) bool {
+	users, e := GetUsers()
+	if e != nil {
+		return false
+	}
+
+	var shouldRewrite = false
+	for i, user := range users {
+		if userName == user.Name {
+			users[i] = User{newName, user.HashedPassword}
+			shouldRewrite = true
+			break
+		}
+	}
+	if !shouldRewrite {
+		return false
+	}
+
+	if err := os.Remove("users.csv"); err != nil {
+		log.Print(err)
+		return false
+	}
+
+	file, createErr := os.Create("users.csv")
+	if createErr != nil {
+		log.Print(createErr)
+		return false
+	}
+
+	for _, user := range users {
+		_, writeErr := file.WriteString(user.Name + "," + user.HashedPassword)
+		if writeErr != nil {
+			log.Print(writeErr)
+		}
+	}
+	return true
+}
+
 // read existing users into memory, verify the user name is not in the file, then add the user to that file
 // return true if successful, otherwise false
 func AddUserToFile(usersCsv *os.File, newUser User) (bool, error) {

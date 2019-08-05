@@ -22,4 +22,28 @@ func TestVerifyBasicAuth(t *testing.T) {
 		// VERIFY that the bool returned is true
 		t.Fatal("Expected user to be verified")
 	}
+
+	// WHEN we attempt to verify a user with a valid user name and a valid password, but not matching
+	if VerifyBasicAuth("ryan", "password456", true, users) {
+		// VERIFY that the  bool returned is false
+		t.Fatal("Expected user not to be verified")
+	}
+
+	// WHEN we attempt to verify a user with a valid user name and an invalid password
+	if VerifyBasicAuth("jose", "fail", true, users) {
+		// VERIFY that the  bool returned is false
+		t.Fatal("Expected user not to be verified")
+	}
+
+	// WHEN we attempt to verify a user with an invalid user name and an invalid password
+	if VerifyBasicAuth("guest", "password123", true, users) {
+		// VERIFY that the  bool returned is false
+		t.Fatal("Expected user not to be verified")
+	}
+
+	// WHEN we attempt to verify a user with an invalid user name and an invalid password
+	if VerifyBasicAuth("guest", "guest", true, users) {
+		// VERIFY that the  bool returned is false
+		t.Fatal("Expected user not to be verified")
+	}
 }

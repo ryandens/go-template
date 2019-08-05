@@ -8,6 +8,10 @@ import (
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		log.Print("Unsupported HTTP method")
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
 	_, err := fmt.Fprintf(w, "Home")
 	if err != nil {
 		log.Fatalf("Problem writing response with error %v", err)

@@ -20,3 +20,9 @@ test:
 
 build:
 	go build -o server
+
+
+curlcommands:
+	curl --user ryandens:123ABD --request POST --cacert public.crt https://localhost:8080/signup
+	curl --user ryandens:123ABD --request GET --cacert public.crt https://localhost:8080/hello
+	curl --user ryandens:123ABD --request POST --cacert public.crt --data 'ryancdens' https://localhost:8080/update-name

@@ -13,7 +13,7 @@ type User struct {
 	HashedPassword string
 }
 
-// calls GetUsrsFromFile with the default users.csv file
+// calls GetUsersFromFile with the default users.csv file
 func GetUsers() ([]User, error) {
 	file, e := os.Open("users.csv")
 	if e != nil {
@@ -42,6 +42,15 @@ func GetUsersFromFile(usersCsv *os.File) ([]User, error) {
 		users = append(users, User{Name: line[0], HashedPassword: line[1]})
 	}
 	return users, nil
+}
+
+// calls GetUsersFromFile with the default users.csv file
+func AddUser(newUser User) (bool, error) {
+	file, e := os.Open("users.csv")
+	if e != nil {
+		log.Fatalf("Problem opening users.csv %v", e)
+	}
+	return AddUserToFile(file, newUser)
 }
 
 // read existing users into memory, verify the user name is not in the file, then add the user to that file

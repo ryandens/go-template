@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestGetUsers(t *testing.T) {
 	// GIVEN an array of expected users
@@ -11,7 +14,11 @@ func TestGetUsers(t *testing.T) {
 	}, User{"josesolis", "defg"})
 
 	// WHEN we call GetUsers on the test_users.csv artifact
-	users, e := GetUsers("test_users.csv")
+	file, fileErr := os.Open("test_users.csv")
+	if fileErr != nil {
+		t.Fatalf("Problem opening test artifact test_users.csv")
+	}
+	users, e := GetUsers(file)
 	if e != nil {
 		t.Fatal(e)
 	}

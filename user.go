@@ -15,14 +15,8 @@ type User struct {
 
 // read existing users into memory
 // adapted from example provided in https://golang.org/pkg/encoding/csv/
-func GetUsers(fileName string) ([]User, error) {
-	file, e := os.Open(fileName)
-	if e != nil {
-		log.Fatal("Problem opening users.csv")
-		return nil, e
-	}
-
-	reader := csv.NewReader(bufio.NewReader(file))
+func GetUsers(usersCsv *os.File) ([]User, error) {
+	reader := csv.NewReader(bufio.NewReader(usersCsv))
 	var users []User
 
 	for {

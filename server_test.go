@@ -29,3 +29,15 @@ func TestHome(t *testing.T) {
 		t.Errorf("HomeHanlder returned incorrect body. Expected %v, actual %v", expectedBody, body)
 	}
 }
+
+func TestValidateUserName(t *testing.T) {
+	responseRecorder := httptest.NewRecorder()
+
+	if !ValidateUserName("safe", responseRecorder) {
+		t.Fatal("Should have passed validation")
+	}
+
+	if ValidateUserName("alert%281%29", responseRecorder) {
+		t.Fatal("Should have failed validation")
+	}
+}

@@ -95,7 +95,7 @@ func ValidateUserName(userName string, w http.ResponseWriter) bool {
 	// we need to be extra careful about the user name because it gets written to the response
 	// to prevent XSS, make sure it at least one English letter, followed by any amount of english letters or spaces.
 	// As support is added for other dialects, this regex can be expanded
-	userNameRegex := regexp.MustCompile("[A-Za-z][A-Za-z ]*")
+	userNameRegex := regexp.MustCompile("^[a-zA-Z]+$")
 	if !userNameRegex.MatchString(userName) {
 		message := "Username must contain only letters A-Z or a-z"
 		log.Print(message)

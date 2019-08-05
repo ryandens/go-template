@@ -3,6 +3,8 @@ PHONY: clean devdeps deps test build
 clean:
 	rm -rf server
 	rm -rf OPATH/
+	cp test_users_tmp.csv test_users.csv
+
 
 deps:
 	openssl genrsa -out private.key 2048

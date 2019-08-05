@@ -12,6 +12,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		log.Print("Unsupported HTTP method")
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
 	}
 	_, err := fmt.Fprintf(w, "Home")
 	if err != nil {
@@ -88,6 +89,10 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		if writeErr != nil {
 			log.Print("problem writing to response")
 		}
+	} else {
+		log.Print("Unsupported HTTP method")
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
 	}
 }
 
@@ -98,17 +103,20 @@ func AuthWrapperHandler(handler func(http.ResponseWriter, *http.Request)) func(h
 		if !ok {
 			log.Print("Basic Auth header returned false for ok")
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
 		}
 
 		users, userError := GetUsers()
 		if userError != nil {
 			log.Print("Problem getting users from users.csv")
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
 		}
 
 		if !VerifyBasicAuth(username, password, ok, users) {
 			log.Print("Invalid login attempt")
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
 		}
 
 		// execute the request if the user is authorized

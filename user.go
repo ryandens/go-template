@@ -43,3 +43,9 @@ func GetUsersFromFile(usersCsv *os.File) ([]User, error) {
 	}
 	return users, nil
 }
+
+// read existing users into memory, verify the user name is not in the file, then add the user to that file
+// return true if successful, otherwise false
+func AddUserToFile(usersCsv *os.File, user User) bool {
+	return false
+}

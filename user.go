@@ -46,6 +46,26 @@ func GetUsersFromFile(usersCsv *os.File) ([]User, error) {
 
 // read existing users into memory, verify the user name is not in the file, then add the user to that file
 // return true if successful, otherwise false
-func AddUserToFile(usersCsv *os.File, user User) bool {
-	return false
+func AddUserToFile(usersCsv *os.File, newUser User) (bool, error) {
+	users, err := GetUsersFromFile(usersCsv)
+	if err != nil {
+		return false, err
+	}
+
+	// check if there is already a user. If there is, don't overwrite user and return false
+	for _, existingUser := range users {
+		if existingUser.Name == newUser.Name {
+			return false, nil
+		}
+	}
+
+	writeableFile, wfErr := os.OpenFile(usersCsv.Name(), os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if wfErr != nil {
+		return false, wfErr
+	}
+	_, wrErr := writeableFile.WriteString(newUser.Name + "," + newUser.HashedPassword)
+	if wrErr != nil {
+		return false, wrErr
+	}
+	return true, nil
 }

@@ -31,3 +31,6 @@ badcurlcommands:
 	curl --user ryandensaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:123ABD --request POST --cacert public.crt https://localhost:8080/signup
 	curl --user ryandens:123ABDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa --request POST --cacert public.crt https://localhost:8080/signup
 	curl --user alert%281%29:123ABD --request POST --cacert public.crt https://localhost:8080/signup
+	curl --user ryandens:123ABD --request POST --cacert public.crt https://localhost:8080/signup # good command, done to see if anyting bad can happen after
+	curl --user ryandens:123ABC --request POST --cacert public.crt https://localhost:8080/hello # bad password
+	curl --user ryandens:123ABC --request POST --cacert public.crt --data 'ryandens' https://localhost:8080/update-name

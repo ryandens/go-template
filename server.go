@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +17,18 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	_, err := fmt.Fprintf(w, "Home")
 	if err != nil {
-		log.Fatalf("Problem writing response with error %v", err)
+		log.Printf("Problem writing response with error %v", err)
+	}
+}
+
+func HelloHandler(w http.ResponseWriter, r *http.Request) {
+	username, _, _ := r.BasicAuth()
+	// the username was already validated before reaching this point, as a result of being validated in SignupHandler
+	// before getting written to the CSV and in AuthWrapperHandler which only gets values from the CSV, but lets make
+	// sure its safe to write to response
+	_, err := fmt.Fprintf(w, "Hello, %v", template.HTMLEscapeString(username))
+	if err != nil {
+		log.Print(err)
 	}
 }
 
@@ -84,11 +96,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
 		}
-		// it is safe to print the username here because we know it passes our regex of safe values
-		_, writeErr := fmt.Fprintf(w, "Successfully created user with name %v", username)
-		if writeErr != nil {
-			log.Print("problem writing to response")
-		}
+		HelloHandler(w, r)
 	} else {
 		log.Print("Unsupported HTTP method")
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
